@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PageLens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="lens-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M13.5 13.5L17.5 17.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="8.5" cy="8.5" r="2.5" fill="currentColor" opacity="0.3"/>
+        </svg>
+      </div>
+      <span class="brand-name">PageLens</span>
+    </div>
+    <div class="header-actions">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme" title="Cycle theme">🌓</button>
+      <button id="btn-settings" class="icon-btn" aria-label="Settings" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 1v2M8 13v2M1 8h2M13 8h2M2.929 2.929l1.414 1.414M11.657 11.657l1.414 1.414M2.929 13.071l1.414-1.414M11.657 4.343l1.414-1.414" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Page Info Bar ───────────────────────────────────────────────────── -->
+  <div class="page-info">
+    <img id="page-favicon" src="" alt="" class="favicon" width="14" height="14" />
+    <div class="page-meta">
+      <span id="page-title" class="page-title">Loading…</span>
+      <span id="page-url" class="page-url"></span>
+    </div>
+    <span id="page-badge" class="badge badge-subtle"></span>
+  </div>
+
+  <!-- ── View: Main ──────────────────────────────────────────────────────── -->
+  <div id="view-main" class="view">
+    <div class="main-hero">
+      <div class="hero-graphic" aria-hidden="true">
+        <div class="circle c1"></div>
+        <div class="circle c2"></div>
+        <div class="circle c3"></div>
+        <svg class="hero-icon" width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <rect x="6" y="8" width="28" height="3" rx="1.5" fill="currentColor" opacity="0.15"/>
+          <rect x="6" y="14" width="20" height="3" rx="1.5" fill="currentColor" opacity="0.25"/>
+          <rect x="6" y="20" width="24" height="3" rx="1.5" fill="currentColor" opacity="0.2"/>
+          <rect x="6" y="26" width="16" height="3" rx="1.5" fill="currentColor" opacity="0.15"/>
+          <circle cx="30" cy="27" r="7" stroke="currentColor" stroke-width="2" opacity="0.6"/>
+          <path d="M35.5 32.5L39 36" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+        </svg>
+      </div>
+      <p class="hero-tagline">AI-powered page intelligence</p>
+    </div>
+
+    <div class="main-actions">
+      <button id="btn-summarize" class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M2 4h12M2 8h8M2 12h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        Summarize Page
+      </button>
+      <div id="loading-text" class="loading-indicator hidden" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <span>Analyzing content…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── View: Result ────────────────────────────────────────────────────── -->
+  <div id="view-result" class="view hidden">
+    <div class="result-header">
+      <p id="summary-oneliner" class="summary-oneliner"></p>
+      <div class="result-meta">
+        <span class="meta-item">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M6 3.5v2.5l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          <span id="meta-readtime"></span>
+        </span>
+        <span class="meta-sep">·</span>
+        <span id="meta-wordcount" class="meta-item"></span>
+        <span class="meta-sep">·</span>
+        <span id="badge-type" class="badge badge-type"></span>
+        <span id="badge-sentiment" class="badge"></span>
+        <span id="cache-badge" class="badge badge-cache" style="display:none">cached</span>
+      </div>
+    </div>
+
+    <div class="result-body">
+      <section class="summary-section" aria-labelledby="bullets-heading">
+        <h2 id="bullets-heading" class="section-label">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 3h8M2 6h6M2 9h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Key Points
+        </h2>
+        <ul id="bullet-list" class="bullet-list"></ul>
+      </section>
+
+      <section class="summary-section" aria-labelledby="insights-heading">
+        <h2 id="insights-heading" class="section-label">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M6 1.5a4.5 4.5 0 1 1 0 9M6 1.5v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Insights
+        </h2>
+        <ul id="insight-list" class="insight-list"></ul>
+      </section>
+
+      <section class="summary-section" aria-labelledby="keywords-heading">
+        <h2 id="keywords-heading" class="section-label">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Keywords
+        </h2>
+        <div id="keywords" class="keywords-container"></div>
+      </section>
+    </div>
+
+    <div class="result-actions">
+      <button id="btn-highlight" class="btn btn-secondary" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M2 10l2-4 4-4 2 2-4 4-4 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M8 4l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Highlight
+      </button>
+      <button id="btn-copy" class="btn btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <rect x="1.5" y="4.5" width="8" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M4.5 4.5V3a1.5 1.5 0 0 1 1.5-1.5h5A1.5 1.5 0 0 1 12.5 3v7A1.5 1.5 0 0 1 11 11.5H9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Copy
+      </button>
+      <button id="btn-clear" class="btn btn-ghost">Clear</button>
+    </div>
+  </div>
+
+  <!-- ── View: Error ─────────────────────────────────────────────────────── -->
+  <div id="view-error" class="view hidden">
+    <div class="error-state">
+      <div class="error-icon" aria-hidden="true">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2" opacity="0.4"/>
+          <path d="M16 10v7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="16" cy="21.5" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <p id="error-message" class="error-message"></p>
+      <div class="error-actions">
+        <button id="btn-retry" class="btn btn-primary">Try Again</button>
+        <button id="btn-back" class="btn btn-ghost">Go Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── View: Settings ──────────────────────────────────────────────────── -->
+  <div id="view-settings" class="view hidden">
+    <div class="settings-header">
+      <h2 class="settings-title">Settings</h2>
+      <button id="btn-settings-close" class="icon-btn" aria-label="Close settings">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <p id="settings-prompt" class="settings-prompt"></p>
+
+    <div class="settings-body">
+      <div class="field-group">
+        <label class="field-label" for="api-key-input">
+          Anthropic API Key
+          <a href="https://aistudio.google.com/apikey" target="_blank" class="link-small" aria-label="Get free API key (opens in new tab)">Get free key ↗</a>
+        </label>
+        <div class="input-wrapper">
+          <input
+            id="api-key-input"
+            type="password"
+            class="text-input"
+            placeholder="AIzaSy…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="toggle-visibility" type="button" aria-label="Toggle key visibility" onclick="
+            const inp = document.getElementById('api-key-input');
+            inp.type = inp.type === 'password' ? 'text' : 'password';
+            this.textContent = inp.type === 'password' ? '👁' : '🙈';
+          ">👁</button>
+        </div>
+        <p class="field-hint">Stored locally. Never sent anywhere except Anthropic's API.</p>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label toggle-label" for="highlight-toggle">
+          Enable page highlighting
+          <div class="toggle-switch">
+            <input type="checkbox" id="highlight-toggle" role="switch" checked />
+            <span class="toggle-track" aria-hidden="true"></span>
+          </div>
+        </label>
+        <p class="field-hint">Highlight keyword matches on the page after summarizing.</p>
+      </div>
+    </div>
+
+    <div class="settings-footer">
+      <button id="btn-save-settings" class="btn btn-primary">Save Settings</button>
+    </div>
+  </div>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <span class="footer-text">PageLens · Powered by Gemini</span>
+  </footer>
+
+  <script src="src/popup.js"></script>
+</body>
+</html>
