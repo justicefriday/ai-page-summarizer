@@ -3,13 +3,13 @@
  * Orchestrates extraction → background AI call → UI rendering.
  */
 
-// ─── State ────────────────────────────────────────────────────────────────────
+// state
 let currentTab = null;
 let currentSummary = null;
 let highlightsActive = false;
 let isSettingsOpen = false;
 
-// ─── DOM References ───────────────────────────────────────────────────────────
+// Dom References
 const $ = (id) => document.getElementById(id);
 const views = {
   main: $("view-main"),
@@ -18,7 +18,7 @@ const views = {
   error: $("view-error")
 };
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
+// Initialization
 document.addEventListener("DOMContentLoaded", async () => {
   await loadTheme();
   await initCurrentTab();
@@ -74,7 +74,7 @@ function bindEvents() {
   $("theme-toggle").addEventListener("click", cycleTheme);
 }
 
-// ─── Summarize Flow ───────────────────────────────────────────────────────────
+// Summarize button handler — main flow orchestrator
 async function handleSummarize() {
   // Verify API key first
   const settings = await sendToBackground({ type: "GET_SETTINGS" });
@@ -185,7 +185,7 @@ async function handleHighlight() {
   }
 }
 
-// ─── Settings ─────────────────────────────────────────────────────────────────
+// Settings management
 async function toggleSettings() {
   isSettingsOpen = !isSettingsOpen;
 
@@ -227,7 +227,7 @@ async function handleSaveSettings() {
   setTimeout(() => (btn.textContent = "Save Settings"), 1500);
 }
 
-// ─── Rendering ────────────────────────────────────────────────────────────────
+// Rendering the summary result view
 function renderSummary(data, fromCache) {
   showView("result");
 
@@ -296,7 +296,7 @@ function formatSummaryAsText(data) {
   return lines.join("\n");
 }
 
-// ─── View Management ──────────────────────────────────────────────────────────
+// View Management
 function showView(name) {
   for (const [key, el] of Object.entries(views)) {
     el.classList.toggle("hidden", key !== name);
@@ -324,7 +324,7 @@ function showError(message) {
   $("error-message").textContent = message;
 }
 
-// ─── Theme ────────────────────────────────────────────────────────────────────
+// Theme
 const THEMES = ["auto", "light", "dark"];
 let themeIndex = 0;
 
@@ -357,7 +357,7 @@ function applyTheme(theme) {
   $("theme-toggle").setAttribute("aria-label", `Theme: ${theme}`);
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers
 async function sendToBackground(message) {
   return chrome.runtime.sendMessage(message);
 }

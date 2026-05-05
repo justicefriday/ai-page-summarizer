@@ -6,7 +6,7 @@
 
 ---
 
-## ✨ Features
+## Features
 
 - **One-click summarization** — Extracts and analyzes page content instantly
 - **Structured output** — One-liner overview, bullet key points, deeper insights

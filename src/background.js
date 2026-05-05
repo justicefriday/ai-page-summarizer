@@ -135,7 +135,7 @@ async function callGeminiAPI(apiKey, prompt) {
   return text;
 }
 
-// ─── Response Parser ──────────────────────────────────────────────────────────
+// ─── Response Parser 
 function parseAIResponse(rawText, estimatedReadTime, wordCount) {
   try {
     // Strip any accidental markdown fences
@@ -171,7 +171,7 @@ function parseAIResponse(rawText, estimatedReadTime, wordCount) {
   }
 }
 
-// ─── XSS Sanitization ─────────────────────────────────────────────────────────
+// xss protection for any AI-generated text that might be rendered in the popup
 function sanitize(str) {
   if (typeof str !== "string") return "";
   return str
@@ -183,7 +183,7 @@ function sanitize(str) {
     .trim();
 }
 
-// ─── Cache Management ─────────────────────────────────────────────────────────
+// catch and store summaries in chrome.storage.local with a TTL
 async function getCachedSummary(url) {
   const key = `cache_${hashUrl(url)}`;
   const result = await chrome.storage.local.get(key);
@@ -223,7 +223,7 @@ function hashUrl(url) {
   return Math.abs(hash).toString(36);
 }
 
-// ─── Settings ─────────────────────────────────────────────────────────────────
+// settings management — only API key is stored, and it's only used in this background script for security
 async function getSettings() {
   const result = await chrome.storage.local.get("settings");
   return result.settings || { apiKey: "", theme: "auto", highlightEnabled: true };

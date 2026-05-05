@@ -4,7 +4,7 @@
  * Also handles highlight injection when requested.
  */
 
-// ─── Message Listener ─────────────────────────────────────────────────────────
+// ─── Message Listener 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (sender.id !== chrome.runtime.id) return false;
 
@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// ─── Content Extraction ───────────────────────────────────────────────────────
+// ─── Content Extraction 
 function extractPageContent() {
   const title = document.title || "";
   const url = window.location.href;
@@ -188,7 +188,7 @@ function countWords(text) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
-// ─── Keyword Highlighting ─────────────────────────────────────────────────────
+// ─── Keyword Highlighting 
 const HIGHLIGHT_CLASS = "pagelens-highlight";
 const HIGHLIGHT_STYLE_ID = "pagelens-highlight-styles";
 
